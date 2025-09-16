@@ -5,25 +5,36 @@
   <style>
     button {
       margin-top: 10px;
-      padding: 5px 10px;
+      padding: 10px 10px;
       background-color: #4CAF50;
       color: white;
       border: none;
       cursor: pointer;
+      flex: 1;
     }
 
     button:hover {
       background-color: #45a049;
     }
 
+    .button-row {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+    }
   </style>
 </head>
-<body>
+
+
+<body style="min-width: 320px;">
   <h1>Tabs in Current Window</h1>
   <ul id="tabs-list"></ul>
 
-  <button id="import-button">Import URLs from .urls</button>
-
+  <div class="button-row">
+    <button id="import-button">Import URLs from .urls</button>
+    <button id="save-button">Save URLs as .urls</button>
+  </div>
+  
   <script src="popup.js"></script>
 </body>
 </html>

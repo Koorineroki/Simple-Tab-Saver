@@ -1,11 +1,13 @@
+// Get the saveButton from HTML
 document.addEventListener('DOMContentLoaded', function() {
-  const saveButton = document.createElement('button');
-  saveButton.textContent = 'Save URLs as .urls';
-  document.body.appendChild(saveButton);
+  // Get Buttons
+  const saveButton = document.getElementById('save-button');
+  const importButton = document.getElementById('import-button');
 
+  // Store all tab URLs in current window
   let tabsList = [];
 
-  const importButton = document.getElementById('import-button');
+  // Create a hidden file input for importing .urls files
   const fileInput = document.createElement('input');
   fileInput.type = 'file';
   fileInput.accept = '.urls';
@@ -13,22 +15,23 @@ document.addEventListener('DOMContentLoaded', function() {
   document.body.appendChild(fileInput);
 
 
-  // Get all tab URLs of the current window
+  // Get all tab URLs and display them on the page
   chrome.tabs.query({currentWindow: true}, function(tabs) {
     let tabsUl = document.getElementById('tabs-list');
 
+    // Only process tabs with http/https protocol
     tabs.forEach((tab) => {
-      if (tab.url.startsWith('http')) { // Filter out non-http/https tabs
+      if (tab.url.startsWith('http')) {
         let li = document.createElement('li');
         li.textContent = tab.url;
         tabsUl.appendChild(li);
-        tabsList.push(tab.url); // Adding URLs to array
+        tabsList.push(tab.url);
       }
     });
   });
 
 
-  // Click the button to save as urls file
+  // Save button click event: save all tab URLs as a .urls file
   saveButton.addEventListener('click', function() {
     if (tabsList.length > 0) {
       let blob = new Blob([tabsList.join('\n')], {type: 'text/plain'});
@@ -43,10 +46,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
+  // Import button click event: trigger file input
   importButton.addEventListener('click', function() {
     fileInput.click();
   });
 
+  // File input change event: read .urls file and open all URLs
   fileInput.addEventListener('change', function(event) {
     const file = event.target.files[0];
 
@@ -54,12 +59,14 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
     }
 
+    // Validate file extension
     if (!file.name.endsWith('.urls')) {
       alert('Please select a valid .urls file containing URLs.');
       fileInput.value = '';
       return;
     }
 
+    // Read file content and open each URL
     const reader = new FileReader();
     reader.onload = function(loadEvent) {
       const fileContent = loadEvent.target.result;
@@ -76,3 +83,4 @@ document.addEventListener('DOMContentLoaded', function() {
     reader.readAsText(file);
   });
 });
+
